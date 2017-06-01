@@ -8,62 +8,64 @@ package pl.quicksort.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import pl.quicksort.algorithm.QuickSort;
 
 /**
  *
- * @author Marcel
+ * @author Marcel Woznica
+ * @version 1.0
  */
-public class MainGui extends JFrame{
+public class MainGui extends JFrame {
     
     private JPanel mainPanel;
     private JPanel rightPanel;
-    private  JPanel centerPanel;
+    private JPanel centerPanel;
     private JPanel leftPanel;
     private JButton sortButton;
     private JTextArea enterData;
     private JTextArea resultData;
-    private JPanel itemPanel;
+    private JPanel panelWithPanels;
     private JLabel enterLabel;
     private JLabel resultLabel;
-     public static void main(String[] args) {
+    private QuickSort quicksort;
+    
+    public static void main(String[] args) {
         new MainGui();
     }
-     
-      public MainGui() {
+    
+    public MainGui() {
         super("Quick Sort");
-         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-         setMainPanel();
-         setCenterArea();
-         setLeftSide();
-         setRightSide();
-         mainPanel.add(itemPanel);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setMainPanel();
+        setCenterArea();
+        setLeftSide();
+        setRightSide();
+        mainPanel.add(panelWithPanels);
+        
+        setOnClick();
         setContentPane(mainPanel);
         setVisible(true);
         setSize(new Dimension(510, 200));
         setLocationRelativeTo(null);
         setResizable(false);
-      }
-      
-       private void setMainPanel() {
-        itemPanel = new JPanel(new BorderLayout(3,3));
-        mainPanel=new JPanel();
-        itemPanel.setBackground(Color.WHITE);
+    }
+    
+    private void setMainPanel() {
+        panelWithPanels = new JPanel(new BorderLayout(3, 3));
+        mainPanel = new JPanel();
+        panelWithPanels.setBackground(Color.WHITE);
         
         setContentPane(mainPanel);
     }
-       
-       private void setCenterArea() {
+    
+    private void setCenterArea() {
         centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout());
         centerPanel.setBackground(Color.LIGHT_GRAY);
@@ -71,42 +73,55 @@ public class MainGui extends JFrame{
         
         sortButton = new JButton("SORT");
         centerPanel.add(sortButton, BorderLayout.NORTH);
-
+        panelWithPanels.add(centerPanel, BorderLayout.CENTER);
+    }
+    
+    private void setLeftSide() {
+        JPanel leftChildPanel = new JPanel(new BorderLayout(1, 2));
+        enterLabel = new JLabel(" Enter you numbers, fx: 1, 2, 3");
         
-         itemPanel.add(centerPanel,BorderLayout.CENTER);
-       }
-       
-       private void setLeftSide() {
-        JPanel leftChildPanel=new JPanel(new BorderLayout(1,2));
-        enterLabel=new JLabel(" Enter you numbers, fx: 1, 2, 3");
         leftPanel = new JPanel(new BorderLayout());
         leftPanel.setBackground(Color.LIGHT_GRAY);
         leftPanel.setPreferredSize(new Dimension(200, 100));
-        enterData=new JTextArea(10,5);
-        JScrollPane scrollPane= new JScrollPane(enterData);
+        enterData = new JTextArea(10, 5);
+        JScrollPane scrollPane = new JScrollPane(enterData);
+        
         leftChildPanel.add(scrollPane);
         leftChildPanel.add(enterLabel, BorderLayout.NORTH);
-        leftPanel.add(leftChildPanel,BorderLayout.NORTH);
+        leftPanel.add(leftChildPanel, BorderLayout.NORTH);
         
-
-        itemPanel.add(leftPanel,BorderLayout.WEST);
+        panelWithPanels.add(leftPanel, BorderLayout.WEST);
     }
-       
-        private void setRightSide() {
-        JPanel rightChildPanel=new JPanel(new BorderLayout(1,2));
-        resultLabel=new JLabel(" Your result");
+    
+    private void setRightSide() {
+        JPanel rightChildPanel = new JPanel(new BorderLayout(1, 2));
+        
+        resultLabel = new JLabel(" Your result:");
         rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBackground(Color.LIGHT_GRAY);
         rightPanel.setPreferredSize(new Dimension(200, 100));
-        resultData=new JTextArea(10,5);
-        JScrollPane scrollPane= new JScrollPane(resultData);
+        
+        resultData = new JTextArea(10, 5);
+        JScrollPane scrollPane = new JScrollPane(resultData);
         rightChildPanel.add(scrollPane);
         rightChildPanel.add(resultLabel, BorderLayout.NORTH);
-        rightPanel.add(rightChildPanel,BorderLayout.NORTH);
+        rightPanel.add(rightChildPanel, BorderLayout.NORTH);
+        panelWithPanels.add(rightPanel, BorderLayout.EAST);
+    }
+    
+    private void setOnClick() {
         
-
-        
-
-        itemPanel.add(rightPanel,BorderLayout.EAST);
+        sortButton.addActionListener(e -> {
+            String textFromTextBox = enterData.getText();
+            
+            quicksort = new QuickSort(textFromTextBox);
+            try {
+                quicksort.executeSort();
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(this, "Data to big. Max value=" + Integer.MAX_VALUE, "Error", JOptionPane.ERROR_MESSAGE);
+                enterData.setText("");
+            }
+            
+        });
     }
 }
