@@ -40,6 +40,7 @@ public class MainGui extends JFrame {
         new MainGui();
     }
     
+    
     public MainGui() {
         super("Quick Sort");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -102,6 +103,7 @@ public class MainGui extends JFrame {
         rightPanel.setPreferredSize(new Dimension(200, 100));
         
         resultData = new JTextArea(10, 5);
+        resultData.setEnabled(false);
         JScrollPane scrollPane = new JScrollPane(resultData);
         rightChildPanel.add(scrollPane);
         rightChildPanel.add(resultLabel, BorderLayout.NORTH);
@@ -118,9 +120,11 @@ public class MainGui extends JFrame {
             try {
                 quicksort.executeSort();
             } catch (NumberFormatException nfe) {
-                JOptionPane.showMessageDialog(this, "Data to big. Max value=" + Integer.MAX_VALUE, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Invalid data.Data must be seprated by ,  Max value=" + Integer.MAX_VALUE, "Error", JOptionPane.ERROR_MESSAGE);
                 enterData.setText("");
             }
+            
+            resultData.setText(quicksort.convertToString());
             
         });
     }
